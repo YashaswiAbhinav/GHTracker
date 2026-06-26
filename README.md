@@ -51,3 +51,4 @@ This repo also includes a minimal Tauri desktop app that listens for attendance 
 - If the app does not receive updates, check that the extension can reach `http://127.0.0.1:49001/attendance`.
 - The Tauri window is always-on-top but the browser still hosts the page bridge.
 # GHTracker
+# GHTracker
