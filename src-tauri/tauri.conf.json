@@ -1,0 +1,31 @@
+{
+  "productName": "Zoho Office Time Desktop",
+  "version": "0.1.0",
+  "identifier": "cloud.doorknob.zohoofficetimedesktop",
+  "build": {
+    "beforeBuildCommand": "",
+    "beforeDevCommand": "",
+    "frontendDist": "../src"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "macOSPrivateApi": true,
+    "security": {
+      "csp": null
+    },
+    "windows": [
+      {
+        "label": "main",
+        "title": "Zoho Office Time",
+        "width": 280,
+        "height": 175,
+        "resizable": false,
+        "fullscreen": false,
+        "transparent": true,
+        "decorations": false,
+        "alwaysOnTop": true,
+        "shadow": false
+      }
+    ]
+  }
+}

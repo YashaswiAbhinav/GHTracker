@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Zoho Office Time Floating Monitor",
+  "description": "Displays Zoho People office time in a floating always-visible widget.",
+  "version": "0.1.0",
+  "permissions": ["storage", "scripting", "tabs"],
+  "host_permissions": ["https://people.zoho.com/*", "http://127.0.0.1:49001/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Zoho Office Time"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["page-bridge.js"],
+      "matches": ["https://people.zoho.com/*"]
+    }
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://people.zoho.com/*"],
+      "js": ["content-script.js"],
+      "css": ["overlay.css"],
+      "run_at": "document_idle",
+      "all_frames": true
+    }
+  ]
+}

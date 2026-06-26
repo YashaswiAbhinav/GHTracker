@@ -1,0 +1,317 @@
+:root {
+  /* Dynamic radial light source that acts as a magnifying highlight */
+  --bg-gradient: radial-gradient(circle at 50% 15%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.03) 60%, rgba(0, 0, 0, 0.2) 100%);
+  --border-light: rgba(255, 255, 255, 0.15);
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.85);
+  --text-muted: rgba(255, 255, 255, 0.55);
+  --accent-color: #3b82f6;
+  --accent-glow: rgba(59, 130, 246, 0.3);
+  --progress-gradient: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+  --dot-offline: #ef4444;
+  --dot-online: #10b981;
+  --dot-break: #f59e0b;
+
+  /* Theme-specific variables */
+  --time-gradient: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%);
+  --time-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  --gel-reflection: linear-gradient(to bottom, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.01) 100%);
+  --gel-border: 1px solid rgba(255, 255, 255, 0.08);
+  --container-shadow: 
+    inset 0 0 0 1px var(--border-light),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1.5px 0 rgba(0, 0, 0, 0.2),
+    0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.container.light-theme {
+  --bg-gradient: radial-gradient(circle at 50% 15%, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.2) 60%, rgba(255, 255, 255, 0.1) 100%);
+  --border-light: rgba(15, 23, 42, 0.12);
+  --text-primary: #0f172a;
+  --text-secondary: rgba(15, 23, 42, 0.85);
+  --text-muted: rgba(15, 23, 42, 0.55);
+  --accent-color: #2563eb;
+  --accent-glow: rgba(37, 99, 235, 0.2);
+  --progress-gradient: linear-gradient(90deg, #2563eb 0%, #7c3aed 100%);
+  --time-gradient: linear-gradient(180deg, #0f172a 0%, #334155 100%);
+  --time-shadow: 0 1px 3px rgba(255, 255, 255, 0.25);
+  --gel-reflection: linear-gradient(to bottom, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.05) 100%);
+  --gel-border: 1px solid rgba(255, 255, 255, 0.3);
+  --container-shadow: 
+    inset 0 0 0 1px var(--border-light),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.65),
+    inset 0 -1.5px 0 rgba(0, 0, 0, 0.05),
+    0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: transparent !important;
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+}
+
+.container {
+  position: relative; /* relative for pseudo-element positioning */
+  overflow: hidden; /* clip the gel sheen cap */
+  width: 280px;
+  height: 175px;
+  background: var(--bg-gradient);
+  border: none; /* Removed border to prevent WebKit corner clipping leakage */
+  border-radius: 18px; /* macOS Widget Style */
+  backdrop-filter: blur(2px) saturate(145%); /* 1% subtle liquid glass blur with 45% saturation boost */
+  -webkit-backdrop-filter: blur(2px) saturate(145%);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: var(--container-shadow);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.container::before {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  right: 1px;
+  height: calc(48% - 1px);
+  background: var(--gel-reflection);
+  border-radius: 17px 17px 50% 50% / 17px 17px 10px 10px; /* Offset 1px inside container border */
+  pointer-events: none;
+  border-bottom: var(--gel-border); /* glint line at the lens bend */
+  transition: background 0.3s, border-bottom 0.3s;
+}
+
+/* Header & Drag Area */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 24px;
+  -webkit-app-region: drag; /* Drag window from the title bar */
+  cursor: grab;
+}
+
+.header:active {
+  cursor: grabbing;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-indicator {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--dot-offline);
+  box-shadow: 0 0 8px var(--dot-offline);
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.status-indicator.online {
+  background-color: var(--dot-online);
+  box-shadow: 0 0 8px var(--dot-online);
+}
+
+.status-indicator.break {
+  background-color: var(--dot-break);
+  box-shadow: 0 0 8px var(--dot-break);
+}
+
+.status-text {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.controls {
+  display: flex;
+  gap: 4px;
+  -webkit-app-region: no-drag;
+}
+
+.control-button {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.control-button svg {
+  width: 10px;
+  height: 10px;
+}
+
+.control-button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+}
+
+.control-button#closeBtn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+/* Timer Section */
+.timer-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2px 0;
+}
+
+.time-display {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  background: var(--time-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: var(--time-shadow);
+  transition: background 0.3s, text-shadow 0.3s;
+}
+
+/* Progress Bar */
+.progress-section {
+  width: 100%;
+}
+
+.progress-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--progress-gradient);
+  border-radius: 2px;
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.5); /* Glowing progress bar */
+  transition: width 0.5s ease-out;
+}
+
+/* Stats Section */
+.stats-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 2px 0;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-label {
+  font-size: 8px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+}
+
+.stat-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Settings Bar */
+.settings-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  padding-top: 8px;
+  font-size: 10px;
+  color: var(--text-muted);
+  -webkit-app-region: no-drag; /* Prevent drag intercept on settings bar */
+}
+
+.settings-label {
+  font-weight: 500;
+}
+
+.target-select {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 10px;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  padding-right: 4px;
+  text-align-last: right;
+  direction: rtl;
+  -webkit-app-region: no-drag; /* Prevent drag intercept on dropdown */
+}
+
+.target-select option {
+  background: #111827;
+  color: #ffffff; /* Locked to white to remain visible on dark menu background */
+}
+
+/* Compact Mode (Height is restricted to 65px) */
+.container.compact {
+  height: 65px;
+  border-radius: 32px; /* capsule pill shape */
+  justify-content: center;
+  gap: 4px;
+}
+
+.container.compact .progress-section,
+.container.compact .stats-section,
+.container.compact .settings-section {
+  display: none;
+}
+
+.container.compact .header {
+  height: 14px;
+}
+
+.container.compact .timer-section {
+  padding: 0;
+}
+
+.container.compact .time-display {
+  font-size: 24px;
+  line-height: 1;
+}
+
+/* Shape the gel cap overlay inside compact mode to prevent corners leaking from the pill shape */
+.container.compact::before {
+  border-radius: 31px 31px 50% 50% / 31px 31px 12px 12px;
+}
+
+/* Cleaned up system label overrides to allow dynamic contrast changes */

@@ -1,0 +1,15 @@
+[package]
+name = "zoho-office-time-desktop"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tauri = { version = "2.6", features = ["macos-private-api", "tray-icon"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tiny_http = "0.12"
+window-vibrancy = "0.6.0"
+objc = "0.2.7"
+
+[build-dependencies]
+tauri-build = { version = "2.6", features = [] }

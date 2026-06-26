@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zoho Office Time Desktop</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div id="app" class="container">
+    <!-- Custom Draggable Title Bar -->
+    <div class="header" id="headerRegion" data-tauri-drag-region>
+      <div class="brand" data-tauri-drag-region>
+        <span class="status-indicator" id="statusDot"></span>
+        <span id="statusText" class="status-text" data-tauri-drag-region>OFFLINE</span>
+      </div>
+      <div class="controls">
+        <button id="minimizeBtn" class="control-button" title="Toggle Compact Mode">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="4" y1="12" x2="20" y2="12"></line></svg>
+        </button>
+        <button id="closeBtn" class="control-button" title="Hide to System Tray">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Clock Display -->
+    <div class="timer-section">
+      <div class="time-display" id="timeValue">00:00:00</div>
+    </div>
+
+    <!-- Progress Indicator -->
+    <div class="progress-section">
+      <div class="progress-track">
+        <div class="progress-fill" id="progressBar"></div>
+      </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-section">
+      <div class="stat-card">
+        <div class="stat-label">REMAINING</div>
+        <div class="stat-value" id="remaining">08:00:00</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">LEAVE AT</div>
+        <div class="stat-value" id="leaveAt">--:--</div>
+      </div>
+    </div>
+
+    <!-- Config Selector -->
+    <div class="settings-section">
+      <label for="targetSelect" class="settings-label">Target Shift:</label>
+      <select id="targetSelect" class="target-select">
+        <option value="28800">8.0 hrs</option>
+        <option value="30600">8.5 hrs</option>
+        <option value="32400">9.0 hrs</option>
+      </select>
+    </div>
+  </div>
+  <script src="./script.js"></script>
+</body>
+</html>
